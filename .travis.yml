@@ -11,4 +11,11 @@ after_success:
   - "docker build -t betadev07/multi-nginx ./nginx"
   - "docker build -t betadev07/multi-server ./server"
   - "docker build -t betadev07/multi-worker ./worker"
+  # Login to Docker hub
+  - "echo DOCKER_PASSWORD | docker login -u "$DOCKER_ID" --password-stdin"
+  # Push those images to Docker hub
+  - "docker push betadev07/multi-client"
+  - "docker push betadev07/multi-nginx"
+  - "docker push betadev07/multi-server"
+  - "docker push betadev07/multi-worker"
 
