@@ -3,10 +3,12 @@ services:
   client-server:
     image: "betadev07/client-server"
     hostname: client-server
+    mem_limit: 128m
     restart: always
   backend-server:
     image: "betadev07/multi-server"
     hostname: backend-server
+    mem_limit: 128m
     restart: always
     environment:
       - REDIS_HOST=$REDIS_HOST
@@ -20,12 +22,14 @@ services:
   worker:
     image: "betadev07/client-worker"
     hostname: worker
+    mem_limit: 128m
     environment:
       - REDIS_CLIENT=$REDIS_HOST
       - REDIS_PORT=$REDIS_PORT
   nginx:
     image: "betadev07/multi-nginx"
     hostname: nginx
+    mem_limit: 128m
     restart: always
     ports:
       - "80:80"
