@@ -1,60 +1,32 @@
 version: '3'
 services:
-
-  redis-server:
-    image: 'redis'
-
-  postgres-server:
-    image: 'postgres'
-    environment:
-      - POSTGRES_PASSWORD=postgres_password
-
   client-server:
-    build:
-      context: ./client
-      dockerfile: Dockerfile.dev
-    volumes:
-      - /app/node_modules
-      - ./client:/app
+    image: "betadev07/client-server"
+    hostname: client-server
     restart: always
-    environment:
-      - WDS_SOCKET_PORT=0
-
   backend-server:
-    build:
-      context: ./server
-      dockerfile: Dockerfile.dev
-    volumes:
-      - /app/node_modules
-      - ./server:/app
-    environment:
-      - REDIS_HOST=redis-server
-      - REDIS_PORT=6379
-      - DB_USER=postgres
-      - DB_PASSWORD=postgres_password
-      - DB_PORT=5432
-      - DATABASE=postgres
-      - DB_HOST=postgres-server
-      - PORT=8000
+    image: "betadev07/multi-server"
+    hostname: backend-server
     restart: always
-
+    environment:
+      - REDIS_HOST=$REDIS_HOST
+      - REDIS_PORT=$REDIS_PORT
+      - DB_USER=$DB_USER
+      - DB_PASSWORD=$DB_PASSWORD
+      - DB_PORT=$DB_PORT
+      - DATABASE=$DATABASE
+      - DB_HOST=$DB_HOST
+      - PORT=$PORT
   worker:
-    build: 
-      context: ./worker
-      dockerfile: Dockerfile.dev
-    volumes:
-      - /app/node_modules
-      - ./worker:/app
+    image: "betadev07/client-worker"
+    hostname: worker
     environment:
-      - REDIS_CLIENT=redis-server
-      - REDIS_PORT=6379
+      - REDIS_CLIENT=$REDIS_HOST
+      - REDIS_PORT=$REDIS_PORT
   nginx:
-    depends_on:
-      - client-server
-      - backend-server
-    build: 
-      context: ./nginx
-      dockerfile: Dockerfile.dev
-    ports:
-      - "3050:80"
+    image: "betadev07/multi-nginx"
+    hostname: nginx
     restart: always
+    ports:
+      - "80:80"
+
