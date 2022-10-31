@@ -12,7 +12,6 @@ export default function Fib() {
 
     useEffect(() => {
 
-
         async function getAllPreviousValues() {
 
             const url =  '/api/values/all';
@@ -22,19 +21,19 @@ export default function Fib() {
 
         }
 
-        async function getAllCalcualtedValues(params) {
-
-            const url = '/api/values/current';
-            const values = await axios.get(url);
-
-            setCalculatedValues(values.data);
-
-        }
-
         getAllCalcualtedValues();
         getAllPreviousValues();
 
     }, []);
+
+    async function getAllCalcualtedValues() {
+
+        const url = '/api/values/current';
+        const values = await axios.get(url);
+
+        setCalculatedValues(values.data);
+
+    }
 
     async function handleSubmit(event) {
         event.preventDefault();
@@ -45,7 +44,12 @@ export default function Fib() {
         }
 
         await axios.post(url, body);
+
         setInput('');
+        // update the last seen values.
+        setPreviousValues([...previousValues, {number:parseInt(body.index) } ]);
+        // get the caluclated value if already not calculated.
+        if(!calculatedValues[parseInt(body.index)]) getAllCalcualtedValues();
     };
 
     function renderCalculatedValues() {
