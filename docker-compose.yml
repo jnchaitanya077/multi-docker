@@ -1,7 +1,7 @@
 version: '3'
 services:
   client-server:
-    image: "betadev07/client-server"
+    image: "betadev07/multi-client"
     hostname: client-server
     mem_limit: 128m
     restart: always
@@ -20,7 +20,7 @@ services:
       - DB_HOST=$DB_HOST
       - PORT=$PORT
   worker:
-    image: "betadev07/client-worker"
+    image: "betadev07/multi-worker"
     hostname: worker
     mem_limit: 128m
     environment:
